@@ -9,7 +9,8 @@ class Board(QFrame):  # base the board on a QFrame widget
     # TODO set the board width and height to be square
     boardWidth = 7  # board is 0 squares wide # TODO this needs updating
     boardHeight = 7 #
-    squareSize = 90
+    squareWidthSize = 90
+    squareHeightSize = 90
     timerSpeed = 1000  # the timer updates every 1 second
     counter = 10  # the number the counter will count down from
 
@@ -63,6 +64,8 @@ class Board(QFrame):  # base the board on a QFrame widget
     def paintEvent(self, event):
         '''paints the board and the pieces of the game'''
         painter = QPainter(self)
+        self.squareWidthSize = int(self.squareWidth())
+        self.squareHeightSize = int(self.squareHeight())
         self.drawBoardSquares(painter)
         #self.drawPieces(painter)
 
@@ -86,9 +89,9 @@ class Board(QFrame):  # base the board on a QFrame widget
         for row in range(0, self.boardHeight):
             for col in range(0, self.boardWidth):
                 painter.save()
-                painter.translate(col * self.squareSize, row * self.squareSize)
+                painter.translate(col * self.squareWidthSize, row * self.squareHeightSize)
                 painter.setBrush(QBrush(QColor(160, 82, 45)))  # Set brush color
-                painter.drawRect(0, 0, self.squareSize, self.squareSize)  # Draw rectangles
+                painter.drawRect(0, 0, self.squareWidthSize, self.squareHeightSize)  # Draw rectangles
                 painter.restore()
 
     def drawPieces(self, painter):
