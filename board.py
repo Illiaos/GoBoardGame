@@ -45,7 +45,8 @@ class Board(QFrame):  # base the board on a QFrame widget
         self.findClosestPoint(event.position().x(), event.position().y())
         (row, col) = self.findClosestPoint(event.position().x(), event.position().y())
         print('(row, col):', row, col)
-        self.boardArray[row][col] = 1
+        if row != -1 and col != -1 or self.boardArray[row][col] == 0:
+            self.boardArray[row][col] = 1
         self.printBoardArray()
 
     def findClosestPoint(self, rowData, colData):
@@ -68,11 +69,11 @@ class Board(QFrame):  # base the board on a QFrame widget
 
     def squareWidth(self):
         #returns the width of one square in the board
-        return self.contentsRect().width() / self.boardWidth
+        return (self.contentsRect().width() / self.boardWidth) - 20
 
     def squareHeight(self):
         #returns the height of one square of the board
-        return self.contentsRect().height() / self.boardHeight
+        return (self.contentsRect().height() / self.boardHeight) - 20
 
     def start(self):
         '''starts game'''
@@ -87,7 +88,7 @@ class Board(QFrame):  # base the board on a QFrame widget
         if Board.counter == 0:
             print("Game over")
         self.counter -= 1
-        print('timerEvent()', self.counter)
+        #print('timerEvent()', self.counter)
         if self.counter < 0:
             self.counter = 10
         self.updateTimerSignal.emit(self.counter)
@@ -95,19 +96,22 @@ class Board(QFrame):  # base the board on a QFrame widget
     def paintEvent(self, event):
         '''paints the board and the pieces of the game'''
         painter = QPainter(self)
-        self.squareEdges = [[0 for _ in range(self.boardWidth + 1)] for _ in range(self.boardHeight + 1)]
+        self.squareEdges = [[0.0 for _ in range(self.boardWidth + 1)] for _ in range(self.boardHeight + 1)]
 
         self.squareWidthSize = int(self.squareWidth()) #update width according to size of screen
         self.squareHeightSize = int(self.squareHeight()) #update height according to size of screen
         self.drawBoardSquares(painter) #draw game board
 
-        self.printBoardArray()
+        #self.printBoardArray()
 
         self.drawPieces(painter) #draw game parts
 
     def mousePressEvent(self, event):
         try:
             self.mousePosToColRow(event)
+            print(event.position().x())
+            print(event.position().y())
+            self.printBoardPointArray()
         except Exception as e:
             print(f"Error occurred: {e}")
 
@@ -121,11 +125,11 @@ class Board(QFrame):  # base the board on a QFrame widget
         pass  # Implement this method according to your logic
 
     def drawBoardSquares(self, painter):
-        for row in range(0, self.boardHeight):
-            for col in range(0, self.boardWidth):
+        for row in range(0, int(self.boardHeight)):
+            for col in range(0, int(self.boardWidth)):
                 painter.save()
-                x = col * self.squareWidthSize
-                y = row * self.squareHeightSize
+                x = col * self.squareWidthSize + 10
+                y = row * self.squareHeightSize + 10
                 self.squareEdges[row][col] = (x, y)
                 if col == self.boardWidth - 1:
                     self.squareEdges[row][col + 1] = (x + self.squareWidthSize, y)
@@ -133,18 +137,9 @@ class Board(QFrame):  # base the board on a QFrame widget
                 painter.setBrush(QBrush(QColor(160, 82, 45)))  # Set brush color
                 painter.drawRect(0, 0, self.squareWidthSize, self.squareHeightSize)  # Draw rectangles
                 painter.restore()
-            if row == self.boardHeight - 1:
-                for i in range(0, self.boardWidth):
-                    x = i * self.squareWidthSize
-                    y = row + 1 * self.squareHeightSize
-                    self.squareEdges[row + 1][i] = (x, y)
-                    if i == self.boardWidth - 1:
-                        self.squareEdges[row + 1][i + 1] = (x + self.squareWidthSize, y)
-
-    def printBoardPointArray(self):
-        '''prints the boardArray in an attractive way'''
-        print("boardPointArray:")
-        print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in self.squareEdges]))
+        last_row = self.squareEdges[-2]
+        modified_row = [(x, y + self.squareHeightSize) for x, y in last_row]
+        self.squareEdges[-1] = modified_row
 
     def drawPieces(self, painter):
         try :
