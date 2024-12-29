@@ -3,30 +3,32 @@ from PyQt6.QtCore import Qt
 
 from board import Board
 from score_board import ScoreBoard
+from main_menu import MainWindow
 
 
 class Go(QMainWindow):
-
-    def __init__(self):
+    def __init__(self, game_logic):
         super().__init__()
-        self.initUI()
+        self.mainMenu = MainWindow(self, game_logic)
+        self.board = None
+        self.scoreBoard = None
+        self.setWindowTitle("Go Game")
+        self.setFixedSize(800, 800)
 
-    def getBoard(self):
-        return self.board
+    def openMainMenu(self):
+        self.setCentralWidget(self.mainMenu)
+        self.center()
+        self.show()
 
-    def getScoreBoard(self):
-        return self.scoreBoard
+    def getMainMenu(self):
+        return self.mainMenu
 
-    def initUI(self):
-        '''Initiates application UI'''
+    def openGamePlay(self):
         self.board = Board(self)
         self.setCentralWidget(self.board)
-
         self.scoreBoard = ScoreBoard()
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.scoreBoard)
         self.scoreBoard.make_connection(self.board)
-
-        self.resize(800, 800)
         self.center()
         self.setWindowTitle('Go')
         self.show()

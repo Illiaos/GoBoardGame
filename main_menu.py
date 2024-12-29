@@ -1,26 +1,25 @@
-import sys
 import random
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QLineEdit, QPushButton, QLabel, QHBoxLayout, QSpacerItem, QSizePolicy
+    QMainWindow, QWidget, QVBoxLayout, QLineEdit, QPushButton, QLabel, QHBoxLayout, QSpacerItem,
+    QSizePolicy, QFrame
 )
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 from alert_panel import AlertDialog
 from rules_panel import RulesDialog
 
-
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-
+class MainWindow(QFrame):
+    def __init__(self, parent: QMainWindow, game_logic):
+        super().__init__(parent)
+        self.game_logic = game_logic
         self.alertWindow = AlertDialog("")
         self.rulesWindow = RulesDialog()
-        self.setWindowTitle("Main Menu")
-        self.setFixedSize(800, 800)  # Set screen size to 800x800
+        parent.setWindowTitle("Main Menu")
 
-        # Set wood-style theme for the main window
+
+        # Set the style of the frame
         self.setStyleSheet("""
-            QMainWindow {
+            QFrame {
                 background-color: #deb887; /* Light wood color */
             }
             QLabel, QLineEdit, QPushButton {
@@ -46,10 +45,7 @@ class MainWindow(QMainWindow):
             }
         """)
 
-        # Main widget and layout
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
-
+        # Main layout
         self.layout = QVBoxLayout()
         self.layout.setSpacing(20)
 
@@ -110,9 +106,7 @@ class MainWindow(QMainWindow):
         # Spacer to balance the layout
         self.layout.addSpacerItem(QSpacerItem(20, 60, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
 
-        self.central_widget.setLayout(self.layout)
-
-        #dev info
+        # Dev info
         self.dev_info = QLabel("Developed by \n Illia Movchan 3098121 \n Olzez")
         self.dev_info.setFont(QFont("Verdana", 14, QFont.Weight.Bold))
         self.dev_info.setStyleSheet("""
@@ -125,6 +119,9 @@ class MainWindow(QMainWindow):
         """)
         self.dev_info.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.layout.addWidget(self.dev_info)
+
+        # Set the layout for this frame
+        self.setLayout(self.layout)
 
     def show_rules_panel(self):
         self.rulesWindow.showPanel()
@@ -142,8 +139,5 @@ class MainWindow(QMainWindow):
             self.alertWindow.showPanel("Enter player 1 name or Select randomly")
         elif self.player2_input.text() == "" or len(self.player2_input.text()) == 0:
             self.alertWindow.showPanel("Enter player 2 name or Select randomly")
-
-        player1 = self.player1_input.text()
-        player2 = self.player2_input.text()
-        print(f"Starting game with Player 1: {player1}, Player 2: {player2}")
-        # Add further logic for starting the game
+        else:
+            self.game_logic.start_new_game(self.player1_input.text(), self.player2_input.text())

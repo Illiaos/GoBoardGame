@@ -1,11 +1,7 @@
 from PyQt6.QtWidgets import QApplication
-from main_menu import MainWindow
-
-from go import Go
+from game_logic import GameLogic
 import sys
 
 app = QApplication([])
-#myGo = Go()
-mainMenu = MainWindow()
-mainMenu.show()
+game_logic = GameLogic()
 sys.exit(app.exec())
