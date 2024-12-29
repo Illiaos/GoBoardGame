@@ -1,19 +1,23 @@
 import random
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QLineEdit, QPushButton, QLabel, QHBoxLayout, QSpacerItem,
-    QSizePolicy, QFrame
+    QSizePolicy, QFrame, QApplication
 )
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
-from alert_panel import AlertDialog
-from rules_panel import RulesDialog
 
-class MainWindow(QFrame):
+from alert_panel import AlertPanel
+from rules_panel import RulesPanel
+from pause_panel import PausePanel
+
+class MainMenuPanel(QFrame):
     def __init__(self, parent: QMainWindow, game_logic):
         super().__init__(parent)
+        self.setParent(parent)
         self.game_logic = game_logic
-        self.alertWindow = AlertDialog("")
-        self.rulesWindow = RulesDialog()
+        self.alertWindow = AlertPanel(parent,"")
+        self.rulesWindow = RulesPanel(parent)
+        self.pausePanel = PausePanel(parent)
         parent.setWindowTitle("Main Menu")
 
 
@@ -121,6 +125,7 @@ class MainWindow(QFrame):
         self.layout.addWidget(self.dev_info)
 
         # Set the layout for this frame
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(self.layout)
 
     def show_rules_panel(self):

@@ -1,21 +1,21 @@
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QApplication
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 
-class RulesPanel(QDialog):
-    def __init__(self, parent, title="Rules"):
+class PausePanel(QDialog):
+    def __init__(self, parent, title="Pause Menu"):
         super().__init__(parent)
         self.setModal(True)
         self.setParent(parent)
         self.setWindowTitle("")  # No title
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)  # Remove the title bar and close button
-        self.setFixedSize(300, 600)  # Set a fixed size for the alert dialog
+        self.setFixedSize(200, 300)  # Set a fixed size for the alert dialog
 
         self.setStyleSheet("""
             QDialog {
-                background-color: #deb887; /* Light wood color */
-                border: 5px solid black;  /* Black border around the window */
-                border-radius: 10px;  /* Rounded corners */
+                background-color: #deb887;
+                border: 5px solid black;
+                border-radius: 10px;
             }
             QLabel {
                 font-family: 'Verdana';
@@ -51,28 +51,41 @@ class RulesPanel(QDialog):
         }""")
         self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # Create a label to show the message
-        self.message_label = QLabel("SET RULES")
-        self.message_label.setFont(QFont("Verdana", 12))
-        self.message_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # Create resume button
+        self.resume_button = QPushButton("Resume")
+        self.resume_button.setFont(QFont("Verdana", 12))
+        self.resume_button.setFixedSize(100, 50)
+        self.resume_button.clicked.connect(self.resume_game)
 
-        # Create OK button
-        self.ok_button = QPushButton("OK")
-        self.ok_button.setFont(QFont("Verdana", 12))
-        self.ok_button.clicked.connect(self.hide)
+        # Create restart button
+        self.restart_button = QPushButton("Restart")
+        self.restart_button.setFont(QFont("Verdana", 12))
+        self.restart_button.setFixedSize(100, 50)
+        self.restart_button.clicked.connect(self.restart_game)
+
+        # Create main menu button
+        self.menu_button = QPushButton("Main Menu")
+        self.menu_button.setFont(QFont("Verdana", 12))
+        self.menu_button.setFixedSize(100, 50)
+        self.menu_button.clicked.connect(self.open_main_menu)
 
         layout.addWidget(self.title_label)  # Add title
-        layout.addWidget(self.message_label)  # Add message
-        layout.addWidget(self.ok_button, alignment=Qt.AlignmentFlag.AlignCenter)  # Add OK button
+        layout.addWidget(self.resume_button, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.restart_button, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.menu_button, alignment=Qt.AlignmentFlag.AlignCenter)
 
         self.setLayout(layout)
 
-    def showPanel(self):
-        self.centerDialog()
-        super().show()
+    def resume_game(self):
+        self.hide()
+
+    def restart_game(self):
+        self.hide()
+
+    def open_main_menu(self):
+        self.hide()
 
     def hide(self):
-        """Override the hide method to close the dialog."""
         super().hide()
 
     def centerDialog(self):

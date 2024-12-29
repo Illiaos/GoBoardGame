@@ -17,7 +17,7 @@ class Board(QFrame):  # base the board on a QFrame widget
     boardHeight = 7 #
     squareWidthSize = 90
     squareHeightSize = 90
-    timerSpeed = 10  # the timer updates every 1 second
+    timerSpeed = 1000  # the timer updates every 1 second
     counter = 10  # the number the counter will count down from
     isStarted = False
     squareEdges = [[]]
@@ -25,6 +25,13 @@ class Board(QFrame):  # base the board on a QFrame widget
     def __init__(self, parent):
         super().__init__(parent)
         self.initBoard()
+        parent.setWindowTitle("GamePlay")
+        # Set the style of the frame
+        self.setStyleSheet("""
+            QFrame {
+                background-color: #deb887; /* Light wood color */
+            }
+            """)
 
     def initBoard(self):
         '''initiates board'''

@@ -2,11 +2,11 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 
-class AlertDialog(QDialog):
-    def __init__(self, message, title="Alert"):
-        super().__init__()
+class AlertPanel(QDialog):
+    def __init__(self, parent, message, title="Alert"):
+        super().__init__(parent)
         self.setModal(True)
-
+        self.setParent(parent)
         self.setWindowTitle("")  # No title
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)  # Remove the title bar and close button
         self.setFixedSize(300, 200)  # Set a fixed size for the alert dialog
@@ -73,8 +73,16 @@ class AlertDialog(QDialog):
 
     def showPanel(self, message):
         self.message_label.setText(message)
+        self.centerDialog()
         super().show()
 
     def hide(self):
         """Override the hide method to close the dialog."""
         super().hide()
+
+    def centerDialog(self):
+        parent_geometry = self.parent().frameGeometry()
+        self_geometry = self.frameGeometry()
+        center_point = parent_geometry.center()
+        self_geometry.moveCenter(center_point)
+        self.move(self_geometry.topLeft())
