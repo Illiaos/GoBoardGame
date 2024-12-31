@@ -3,9 +3,11 @@ import math
 from PyQt6.QtWidgets import QFrame
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPoint
 from PyQt6.QtGui import QPainter, QColor, QBrush, QRadialGradient
+from PyQt6.uic.Compiler.qtproxies import QtCore
 from exceptiongroup import catch
 
 import piece
+from pause_panel import PausePanel
 
 
 class Board(QFrame):  # base the board on a QFrame widget
@@ -24,8 +26,10 @@ class Board(QFrame):  # base the board on a QFrame widget
 
     def __init__(self, parent, game_logic):
         super().__init__(parent)
-        self.initBoard()
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.game_logic = game_logic
+        self.ui_logic = parent
+        self.pause_panel = PausePanel(self, self.pausePanelCloseEvent, self.pausePanelResetGameEvent, self.pausePanelMainMenuEvent)
         parent.setWindowTitle("GamePlay")
         # Set the style of the frame
         self.setStyleSheet("""
@@ -33,6 +37,7 @@ class Board(QFrame):  # base the board on a QFrame widget
                 background-color: #deb887;
             }
             """)
+        self.initBoard()
 
     def initBoard(self):
         '''initiates board'''
@@ -40,8 +45,6 @@ class Board(QFrame):  # base the board on a QFrame widget
         self.timer.timeout.connect(self.timerEvent)  # connect timeout signal to timerEvent method
         self.isStarted = False  # game is not currently started
         self.start()  # start the game which will start the timer
-
-        self.boardArray = [[0 for _ in range(self.boardWidth + 1)] for _ in range(self.boardHeight + 1)]  # TODO - create a 2d int/Piece array to store the state of the game
         self.printBoardArray()    # TODO - uncomment this method after creating the array above
 
     def printBoardArray(self):
@@ -56,6 +59,7 @@ class Board(QFrame):  # base the board on a QFrame widget
         if row != -1 and col != -1 or self.boardArray[row][col] == 0:
             self.boardArray[row][col] = self.game_logic.get_player_turn_id()
             self.resetTimer()
+            self.game_logic.change_turn()
         self.printBoardArray()
         self.update()
 
@@ -95,11 +99,11 @@ class Board(QFrame):  # base the board on a QFrame widget
         self.counter -= 1
         if self.counter < 0:
             self.resetTimer()
+            self.game_logic.change_turn()
         self.updateTimerSignal.emit(self.counter)
 
     def resetTimer(self):
         self.counter = 10
-        self.game_logic.change_turn()
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -115,10 +119,12 @@ class Board(QFrame):  # base the board on a QFrame widget
         except Exception as e:
             print(f"Error occurred: {e}")
 
-
     def resetGame(self):
-        '''clears pieces from the board'''
-        # TODO write code to reset game
+        self.boardArray = [[0 for _ in range(self.boardWidth + 1)] for _ in range(self.boardHeight + 1)]
+        self.game_logic.set_default_player_turn()
+        self.resetTimer()
+        self.timer.start(self.timerSpeed)
+        self.update()
 
     def tryMove(self, newX, newY):
         '''tries to move a piece'''
@@ -162,3 +168,22 @@ class Board(QFrame):  # base the board on a QFrame widget
                     painter.restore()
         except Exception as e:
             print(e)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Escape.value:
+            if self.pause_panel.isHidden():
+                self.pause_panel.show()
+                self.timer.stop()
+                print("CALL")
+        super().keyPressEvent(event)
+
+    def pausePanelCloseEvent(self):
+        self.timer.start(self.timerSpeed)
+        self.updateTimerSignal.emit(self.counter)
+
+    def pausePanelResetGameEvent(self):
+        self.resetGame()
+
+    def pausePanelMainMenuEvent(self):
+        self.timer.stop()
+        self.ui_logic.openMainMenu()

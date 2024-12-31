@@ -3,8 +3,11 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 
 class PausePanel(QDialog):
-    def __init__(self, parent, title="Pause Menu"):
+    def __init__(self, parent, resume_event, restart_event, main_menu_event, title="Pause Menu"):
         super().__init__(parent)
+        self.resume_event = resume_event
+        self.restart_event = restart_event
+        self.main_menu_event = main_menu_event
         self.setModal(True)
         self.setParent(parent)
         self.setWindowTitle("")  # No title
@@ -77,12 +80,15 @@ class PausePanel(QDialog):
         self.setLayout(layout)
 
     def resume_game(self):
+        self.resume_event()
         self.hide()
 
     def restart_game(self):
+        self.restart_event()
         self.hide()
 
     def open_main_menu(self):
+        self.main_menu_event()
         self.hide()
 
     def hide(self):
@@ -94,3 +100,10 @@ class PausePanel(QDialog):
         center_point = parent_geometry.center()
         self_geometry.moveCenter(center_point)
         self.move(self_geometry.topLeft())
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Escape.value:
+            self.resume_game()
+        else:
+            # Handle other keys as usual
+            super().keyPressEvent(event)

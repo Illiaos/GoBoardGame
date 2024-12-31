@@ -4,7 +4,6 @@ from PyQt6.QtCore import Qt
 from board import Board
 from score_board import ScoreBoard
 from main_menu import MainMenuPanel
-from pause_panel import PausePanel
 
 
 class Go(QMainWindow):
@@ -12,14 +11,16 @@ class Go(QMainWindow):
         super().__init__()
         self.game_logic = game_logic
         self.mainMenu = MainMenuPanel(self, game_logic)
-        self.pausePanel = PausePanel(self)
         self.board = None
         self.scoreBoard = None
         self.setWindowTitle("Go Game")
         self.setFixedSize(800, 800)
 
     def openMainMenu(self):
+        self.mainMenu = MainMenuPanel(self, self.game_logic)
         self.setCentralWidget(self.mainMenu)
+        if self.scoreBoard is not None:
+            self.removeDockWidget(self.scoreBoard)
         self.center()
         self.show()
 

@@ -28,3 +28,7 @@ class GameLogic:
         else:
             self.player_1.player_turn = True
             self.player_2.player_turn = False
+
+    def set_default_player_turn(self):
+        self.player_1.player_turn = True
+        self.player_2.player_turn = False

@@ -17,7 +17,6 @@ class MainMenuPanel(QFrame):
         self.game_logic = game_logic
         self.alertWindow = AlertPanel(parent,"")
         self.rulesWindow = RulesPanel(parent)
-        self.pausePanel = PausePanel(parent)
         parent.setWindowTitle("Main Menu")
 
 
