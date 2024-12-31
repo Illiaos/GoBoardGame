@@ -1,9 +1,9 @@
 class Player_Info:
 
-    def __init__(self, player_name = ""):
+    def __init__(self, player_name, turn_state):
         self.player_name = player_name
         self.player_score = 0
-        self.player_turn = False
+        self.player_turn = turn_state
 
     def getPlayerName(self):
         return self.player_name

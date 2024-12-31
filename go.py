@@ -10,6 +10,7 @@ from pause_panel import PausePanel
 class Go(QMainWindow):
     def __init__(self, game_logic):
         super().__init__()
+        self.game_logic = game_logic
         self.mainMenu = MainMenuPanel(self, game_logic)
         self.pausePanel = PausePanel(self)
         self.board = None
@@ -26,7 +27,7 @@ class Go(QMainWindow):
         return self.mainMenu
 
     def openGamePlay(self):
-        self.board = Board(self)
+        self.board = Board(self, self.game_logic)
         self.setCentralWidget(self.board)
         self.scoreBoard = ScoreBoard()
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.scoreBoard)

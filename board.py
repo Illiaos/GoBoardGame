@@ -2,7 +2,7 @@ import math
 
 from PyQt6.QtWidgets import QFrame
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPoint
-from PyQt6.QtGui import QPainter, QColor, QBrush
+from PyQt6.QtGui import QPainter, QColor, QBrush, QRadialGradient
 from exceptiongroup import catch
 
 import piece
@@ -22,14 +22,15 @@ class Board(QFrame):  # base the board on a QFrame widget
     isStarted = False
     squareEdges = [[]]
 
-    def __init__(self, parent):
+    def __init__(self, parent, game_logic):
         super().__init__(parent)
         self.initBoard()
+        self.game_logic = game_logic
         parent.setWindowTitle("GamePlay")
         # Set the style of the frame
         self.setStyleSheet("""
             QFrame {
-                background-color: #deb887; /* Light wood color */
+                background-color: #deb887;
             }
             """)
 
@@ -53,10 +54,12 @@ class Board(QFrame):  # base the board on a QFrame widget
         (row, col) = self.findClosestPoint(event.position().x(), event.position().y())
         print('(row, col):', row, col)
         if row != -1 and col != -1 or self.boardArray[row][col] == 0:
-            self.boardArray[row][col] = 1
+            self.boardArray[row][col] = self.game_logic.get_player_turn_id()
+            self.resetTimer()
         self.printBoardArray()
+        self.update()
 
-    def findClosestPoint(self, rowData, colData):
+    def findClosestPoint(self, row_data, col_data):
         min_distance = float('inf')
         nearest_row, nearest_col = -1, -1
         for row_index, row in enumerate(self.squareEdges):
@@ -65,14 +68,13 @@ class Board(QFrame):  # base the board on a QFrame widget
                     raise ValueError(f"Invalid point format at row {row_index}, col {col_index}: {point}")
                 x, y = point
                 # Calculate Euclidean distance
-                distance = ((x - rowData) ** 2 + (y - colData) ** 2) ** 0.5
+                distance = ((x - row_data) ** 2 + (y - col_data) ** 2) ** 0.5
                 # Update if this point is closer
                 if distance < min_distance:
                     min_distance = distance
                     nearest_row, nearest_col = row_index, col_index
 
         return nearest_row, nearest_col
-
 
     def squareWidth(self):
         #returns the width of one square in the board
@@ -90,35 +92,26 @@ class Board(QFrame):  # base the board on a QFrame widget
         print("start () - timer is started")
 
     def timerEvent(self):
-        '''this event is automatically called when the timer is updated. based on the timerSpeed variable '''
-        # TODO adapt this code to handle your timers
-        if Board.counter == 0:
-            print("Game over")
         self.counter -= 1
-        #print('timerEvent()', self.counter)
         if self.counter < 0:
-            self.counter = 10
+            self.resetTimer()
         self.updateTimerSignal.emit(self.counter)
 
+    def resetTimer(self):
+        self.counter = 10
+        self.game_logic.change_turn()
+
     def paintEvent(self, event):
-        '''paints the board and the pieces of the game'''
         painter = QPainter(self)
         self.squareEdges = [[0.0 for _ in range(self.boardWidth + 1)] for _ in range(self.boardHeight + 1)]
-
         self.squareWidthSize = int(self.squareWidth()) #update width according to size of screen
         self.squareHeightSize = int(self.squareHeight()) #update height according to size of screen
         self.drawBoardSquares(painter) #draw game board
-
-        #self.printBoardArray()
-
         self.drawPieces(painter) #draw game parts
 
     def mousePressEvent(self, event):
         try:
             self.mousePosToColRow(event)
-            print(event.position().x())
-            print(event.position().y())
-            self.printBoardPointArray()
         except Exception as e:
             print(f"Error occurred: {e}")
 
@@ -150,16 +143,22 @@ class Board(QFrame):  # base the board on a QFrame widget
 
     def drawPieces(self, painter):
         try :
+            painter.setRenderHint(QPainter.RenderHint.Antialiasing)
             for row in range(0, len(self.boardArray)):
                 for col in range(0, len(self.boardArray[0])):
                     painter.save()
                     x, y = self.squareEdges[row][col]
                     status = self.boardArray[row][col]
+                    if status == 0:
+                        continue
                     if status == 1:
-                        painter.setBrush(QBrush(QColor(0, 0, 0)))
-                        radius = self.squareWidthSize / 4
-                        center = QPoint(int(x), int(y))
-                        painter.drawEllipse(center, int(radius), int(radius))
+                        painter.setBrush(QBrush(QColor(0, 0, 0), Qt.BrushStyle.SolidPattern))
+                    elif status == 2:
+                        painter.setBrush(QBrush(QColor(255, 255, 255), Qt.BrushStyle.SolidPattern))
+                    radius = self.squareWidthSize / 4
+                    center = QPoint(int(x), int(y))
+                    painter.setPen(Qt.PenStyle.NoPen)
+                    painter.drawEllipse(center, int(radius), int(radius))
                     painter.restore()
         except Exception as e:
             print(e)
