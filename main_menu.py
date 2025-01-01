@@ -80,6 +80,38 @@ class MainMenuPanel(QFrame):
         self.rules_button.clicked.connect(self.show_rules_panel)
         self.layout.addWidget(self.rules_button, alignment=Qt.AlignmentFlag.AlignCenter)
 
+        # Add a QLabel for displaying rules (hidden by default)
+        self.rules_label = QLabel(
+            "Go Board Rules:\n"
+        
+            "1. Place stones on empty intersections.\n"
+            "2. The winning condition = surround more territory than your opponent.\n"
+            "3. Stones surrounded by the opponent are captured.\n"
+            "4. The game ends when both players pass.\n"
+            "5. Scoring is based on territory and captured stones."
+        )
+        self.rules_label.setFont(QFont("Verdana", 24))
+        self.rules_label.setWordWrap(True)
+        self.rules_label.setStyleSheet("""
+            QLabel {
+                font family: 'Verdana';
+                font-style: italic;
+                color: black;
+                padding: 10px;
+                border: 1px solid #8b4513;
+                border-radius: 5px;
+            }
+        """)
+        self.rules_label.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.rules_label.hide()  # Initially hidden
+        self.layout.addWidget(self.rules_label)
+
+        # Set the layout for this frame
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.setLayout(self.layout)
+
+
+
         # Player 1 Input with Label (centered under Play button)
         self.player1_layout = QHBoxLayout()
         self.player1_input = QLineEdit()
@@ -110,7 +142,7 @@ class MainMenuPanel(QFrame):
         self.layout.addSpacerItem(QSpacerItem(20, 60, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
 
         # Dev info
-        self.dev_info = QLabel("Developed by \n Illia Movchan 3098121 \n Olzez")
+        self.dev_info = QLabel("Developed by \n Illia Movchan 3098121 \n Olzhas Samat 3095916")
         self.dev_info.setFont(QFont("Verdana", 14, QFont.Weight.Bold))
         self.dev_info.setStyleSheet("""
             QLabel {
@@ -128,7 +160,11 @@ class MainMenuPanel(QFrame):
         self.setLayout(self.layout)
 
     def show_rules_panel(self):
-        self.rulesWindow.showPanel()
+        """Toggle visibility of the rules label."""
+        if self.rules_label.isVisible():
+            self.rules_label.hide()
+        else:
+            self.rules_label.show()
 
     def generate_random_names(self):
         """Generate random names for Player 1 and Player 2."""
