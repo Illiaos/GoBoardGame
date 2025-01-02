@@ -11,6 +11,7 @@ class GameLogic:
         self.player_1 = Player_Info("", False)
         self.player_2 = Player_Info("", False)
         self.captured_stones = {1: 0, 2: 0}
+        self.pass_count = 0
         self.prev_board = None
         self.go.openMainMenu()
 
@@ -40,8 +41,12 @@ class GameLogic:
         self.player_2.player_turn = False
         self.prev_board = None
         self.captured_stones = {1: 0, 2: 0}
+        self.pass_count = 0
 
     def check_game_over(self, board):
+        #check if number of pass are >= 2 in a row
+        if self.pass_count >= 2:
+            return True
 
         for x in range(len(board)):
             for y in range(len(board[0])):
@@ -75,6 +80,7 @@ class GameLogic:
 
         board[x][y] = self.get_player_turn_id()
         self.check_if_capture_opponent(board, x, y)
+        self.pass_count = 0
         return True
 
     def check_ko(self, board, x, y):
@@ -149,4 +155,9 @@ class GameLogic:
         black_score = sum(row.count(1) for row in board) + self.captured_stones[1]
         white_score = sum(row.count(2) for row in board) + self.captured_stones[2]
         return black_score, white_score
+
+    def player_pass(self):
+        self.pass_count += 1
+        self.change_turn()
+        print(self.pass_count)
 

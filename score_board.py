@@ -1,15 +1,16 @@
-from PyQt6.QtWidgets import QDockWidget, QVBoxLayout, QWidget, QLabel
+from PyQt6.QtWidgets import QDockWidget, QVBoxLayout, QWidget, QLabel, QPushButton
 from PyQt6.QtCore import pyqtSlot
 
 
 class ScoreBoard(QDockWidget):
     '''Base the score_board on a QDockWidget'''
 
-    def __init__(self, get_player_turn_id):
+    def __init__(self, game_logic, get_player_turn_id):
         """
         :param get_player_turn_id: A function to get the current player's ID
         """
         super().__init__()
+        self.game_logic = game_logic
         self.get_player_turn_id = get_player_turn_id
         self.initUI()
 
@@ -36,6 +37,12 @@ class ScoreBoard(QDockWidget):
         self.mainLayout.addWidget(self.label_timeRemaining)
         self.mainLayout.addWidget(self.label_turn)
 
+        # Add pass button
+        self.pass_button = QPushButton("Pass", self)
+        self.pass_button.setGeometry(100, 80, 100, 40)  # x, y, width, height
+        self.pass_button.clicked.connect(self.pass_call)
+
+        self.mainLayout.addWidget(self.pass_button)
         self.mainWidget.setLayout(self.mainLayout)
         self.setWidget(self.mainWidget)
 
@@ -60,3 +67,6 @@ class ScoreBoard(QDockWidget):
         '''Updates the time remaining label'''
         update = "Time Remaining: " + str(timeRemaining)
         self.label_timeRemaining.setText(update)
+
+    def pass_call(self):
+        self.game_logic.player_pass()
