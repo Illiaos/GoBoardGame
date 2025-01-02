@@ -53,6 +53,7 @@ class GameLogic:
                 if board[x][y] == 0:
                     if self.check_move_simulation(board, x, y, 1) or self.check_move_simulation(board, x, y, 2):
                         return  False #can make move
+        self.go.open_win_screen()
         return True #end of game
 
     def check_move_simulation(self, board, x, y, id):

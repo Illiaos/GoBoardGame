@@ -58,6 +58,8 @@ class Board(QFrame):  # base the board on a QFrame widget
         print('(row, col):', row, col)
         if self.game_logic.can_make_move(self.boardArray, row, col):
             self.resetTimer()
+            if self.game_logic.check_game_over(self.boardArray):
+                self.timer.stop()
             self.game_logic.change_turn()
         self.printBoardArray()
         self.update()

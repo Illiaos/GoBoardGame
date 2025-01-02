@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt
 from board import Board
 from score_board import ScoreBoard
 from main_menu import MainMenuPanel
-
+from win_panel import WinPanel
 
 class Go(QMainWindow):
     def __init__(self, game_logic):
@@ -46,7 +46,9 @@ class Go(QMainWindow):
         y = (screen.height() - size.height()) // 2
         self.move(x, y)
 
-
+    def open_win_screen(self):
+        win_screen = WinPanel(self, "", "")
+        win_screen.show()
 
 
 

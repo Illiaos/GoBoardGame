@@ -8,7 +8,6 @@ from PyQt6.QtCore import Qt
 
 from alert_panel import AlertPanel
 from rules_panel import RulesPanel
-from pause_panel import PausePanel
 
 class MainMenuPanel(QFrame):
     def __init__(self, parent: QMainWindow, game_logic):
