@@ -17,25 +17,53 @@ class ScoreBoard(QDockWidget):
     def initUI(self):
         '''Initializes ScoreBoard UI'''
         self.resize(200, 200)
-        self.setWindowTitle('ScoreBoard')
 
+        self.setStyleSheet("""
+                QWidget {
+                    background-color: #f5deb3; /* Wheat color */
+                }
+                QDialog {
+                    background-color: #f5deb3; /* Wheat color for a softer look */
+                }
+                QLabel {
+                    font-family: 'Verdana';
+                    font-size: 12px; /* Smaller font for minimalist design */
+                    color: black;
+                    background-color: #d2b48c; /* Tan color */
+                    text-align: center;
+                    border: 1px solid #8b4513; /* SaddleBrown border */
+                    border-radius: 5px; /* Subtle rounding */
+                    padding: 3px; /* Reduced padding for smaller elements */
+                }
+                QPushButton {
+                    background-color: #a0522d; /* Dark wood color */
+                    color: white;
+                    border: 1px solid #5a3311; /* Subtle border */
+                    border-radius: 5px; /* Rounded corners */
+                    padding: 5px; /* Reduced padding for buttons */
+                    font-size: 12px; /* Smaller font size */
+                }
+            
+                
+            """)
         # Create a widget to hold other widgets
         self.mainWidget = QWidget()
         self.mainLayout = QVBoxLayout()
-
-        # Create labels for displaying game state
-        self.label_clickLocation = QLabel("Click Location: ")
-        self.label_timeRemaining = QLabel("Time Remaining: ")
 
         # Determine the current player's turn
         player_id = self.get_player_turn_id()
         player_color = "Black" if player_id == 1 else "White"
         self.label_turn = QLabel(f"Player {player_id}'s Turn: {player_color}")
+        # Create labels for displaying game state
+
+        self.label_timeRemaining = QLabel("Time Remaining: ")
+
+
 
         # Add labels to layout
-        self.mainLayout.addWidget(self.label_clickLocation)
-        self.mainLayout.addWidget(self.label_timeRemaining)
         self.mainLayout.addWidget(self.label_turn)
+        self.mainLayout.addWidget(self.label_timeRemaining)
+
 
         # Add pass button
         self.pass_button = QPushButton("Pass", self)
