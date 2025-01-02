@@ -46,9 +46,11 @@ class Go(QMainWindow):
         y = (screen.height() - size.height()) // 2
         self.move(x, y)
 
-    def open_win_screen(self):
-        win_screen = WinPanel(self, "", "")
+    def open_win_screen(self, player_1_name, player_2_name, player_1_score, player_2_score, restart_game_event, main_menu_event):
+        win_screen = WinPanel(self, player_1_name, player_2_name, player_1_score, player_2_score, restart_game_event, main_menu_event)
         win_screen.show()
 
+    def update_scoreboard(self, black_score, white_score):
+        self.scoreBoard.update_score(black_score, white_score)
 
 

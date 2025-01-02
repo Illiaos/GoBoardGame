@@ -43,7 +43,7 @@ class GameLogic:
         self.captured_stones = {1: 0, 2: 0}
         self.pass_count = 0
 
-    def check_game_over(self, board):
+    def check_game_over(self, board, restart_game_event, main_menu_event):
         #check if number of pass are >= 2 in a row
         if self.pass_count >= 2:
             return True
@@ -53,7 +53,9 @@ class GameLogic:
                 if board[x][y] == 0:
                     if self.check_move_simulation(board, x, y, 1) or self.check_move_simulation(board, x, y, 2):
                         return  False #can make move
-        self.go.open_win_screen()
+
+        black_score, white_score = self.calculate_nuber_of_stones(board)
+        self.go.open_win_screen(self.player_1.getPlayerName(), self.player_2.getPlayerName(), black_score, white_score, restart_game_event, main_menu_event)
         return True #end of game
 
     def check_move_simulation(self, board, x, y, id):
@@ -77,11 +79,21 @@ class GameLogic:
         if self.check_ko(board, x, y):
             return  False
 
+        #cache board for KO rules
         self.prev_board = [row[:] for row in board]
 
+        #mark board
         board[x][y] = self.get_player_turn_id()
+
+        #check if player collect opponents stones
         self.check_if_capture_opponent(board, x, y)
+
+        #reset pass counter
         self.pass_count = 0
+
+        #upade score
+        black_score, white_score = self.calculate_nuber_of_stones(board)
+        self.go.update_scoreboard(black_score, white_score)
         return True
 
     def check_ko(self, board, x, y):
