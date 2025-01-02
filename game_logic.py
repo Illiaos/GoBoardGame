@@ -29,6 +29,14 @@ class GameLogic:
             self.player_1.player_turn = True
             self.player_2.player_turn = False
 
+        # Update the scoreboard
+        self.go.scoreBoard.update_turn_label()
+
     def set_default_player_turn(self):
         self.player_1.player_turn = True
         self.player_2.player_turn = False
+    def start_new_game(self, player_name_1, player_name_2):
+        self.player_1 = Player_Info(player_name_1, True)
+        self.player_2 = Player_Info(player_name_2, False)
+        self.set_default_player_turn()
+        self.go.openGamePlay()
