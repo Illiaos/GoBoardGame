@@ -54,6 +54,9 @@ class ScoreBoard(QDockWidget):
         player_id = self.get_player_turn_id()
         player_color = "Black" if player_id == 1 else "White"
         self.label_turn = QLabel(f"Player {player_id}'s Turn: {player_color}")
+
+        self.label_black_score = QLabel("Black Score: 0")
+        self.label_white_score = QLabel("White Score: 0")
         # Create labels for displaying game state
 
         self.label_timeRemaining = QLabel("Time Remaining: ")
@@ -62,6 +65,8 @@ class ScoreBoard(QDockWidget):
 
         # Add labels to layout
         self.mainLayout.addWidget(self.label_turn)
+        self.mainLayout.addWidget(self.label_black_score)
+        self.mainLayout.addWidget(self.label_white_score)
         self.mainLayout.addWidget(self.label_timeRemaining)
 
 
@@ -98,3 +103,20 @@ class ScoreBoard(QDockWidget):
 
     def pass_call(self):
         self.game_logic.player_pass()
+
+    def calculate_and_update_scores(self):
+        """
+        Calculates the scores for both players and updates the scoreboard UI.
+        """
+        # Get the current board state
+        board = self.go.board.get_board_array()
+
+        # Calculate scores
+        black_score = sum(row.count(1) for row in board) + self.captured_stones[1]
+        white_score = sum(row.count(2) for row in board) + self.captured_stones[2]
+
+        # Update the scoreboard UI
+        self.go.scoreBoard.update_scores(black_score, white_score)
+
+        # Log scores for debugging
+        print(f"Scores updated: Black: {black_score}, White: {white_score}")
