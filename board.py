@@ -56,8 +56,7 @@ class Board(QFrame):  # base the board on a QFrame widget
         self.findClosestPoint(event.position().x(), event.position().y())
         (row, col) = self.findClosestPoint(event.position().x(), event.position().y())
         print('(row, col):', row, col)
-        if row != -1 and col != -1 or self.boardArray[row][col] == 0:
-            self.boardArray[row][col] = self.game_logic.get_player_turn_id()
+        if self.game_logic.can_make_move(self.boardArray, row, col):
             self.resetTimer()
             self.game_logic.change_turn()
         self.printBoardArray()
