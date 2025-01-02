@@ -1,3 +1,5 @@
+from numpy.ma.extras import row_stack
+
 import board
 from player_data import Player_Info
 from go import Go
@@ -9,6 +11,7 @@ class GameLogic:
         self.player_1 = Player_Info("", False)
         self.player_2 = Player_Info("", False)
         self.captured_stones = {1: 0, 2: 0}
+        self.prev_board = None
         self.go.openMainMenu()
 
         #self.go.openMainMenu()
@@ -35,19 +38,53 @@ class GameLogic:
     def set_default_player_turn(self):
         self.player_1.player_turn = True
         self.player_2.player_turn = False
+        self.prev_board = None
+        self.captured_stones = {1: 0, 2: 0}
+
+    def check_game_over(self, board):
+
+        for x in range(len(board)):
+            for y in range(len(board[0])):
+                if board[x][y] == 0:
+                    if self.check_move_simulation(board, x, y, 1) or self.check_move_simulation(board, x, y, 2):
+                        return  False #can make move
+        return True #end of game
+
+    def check_move_simulation(self, board, x, y, id):
+        # duplicate board, make vision of move
+        temp_board = [row[:] for row in board]
+        if temp_board[x][y] != 0:
+            return False  # move not possible
+
+        temp_board[x][y] = id
+
+        #check can move or capture opponent
+        return any(
+            0 <= nx < len(board) and 0 <= ny < len(board[0]) and temp_board[nx][ny] == 0
+            for nx, ny in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
+        )
 
     def can_make_move(self, board, x, y):
         #if already occupied
         if board[x][y] != 0:
             return False
+        if self.check_ko(board, x, y):
+            return  False
+
+        self.prev_board = [row[:] for row in board]
 
         board[x][y] = self.get_player_turn_id()
         self.check_if_capture_opponent(board, x, y)
-        #if self.ko_check(board, x, y):
-            #board[x][y] = 0
-            #return False
-
         return True
+
+    def check_ko(self, board, x, y):
+        if self.prev_board:
+            temp = [row[:] for row in board]
+            temp[x][y] = self.get_player_turn_id()
+
+            if temp == self.prev_board:
+                return True
+        return False
 
     def check_if_capture_opponent(self, board, x, y):
         height = len(board) - 1
