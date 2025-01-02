@@ -3,47 +3,60 @@ from PyQt6.QtCore import pyqtSlot
 
 
 class ScoreBoard(QDockWidget):
-    '''# base the score_board on a QDockWidget'''
+    '''Base the score_board on a QDockWidget'''
 
-    def __init__(self):
+    def __init__(self, get_player_turn_id):
+        """
+        :param get_player_turn_id: A function to get the current player's ID
+        """
         super().__init__()
+        self.get_player_turn_id = get_player_turn_id
         self.initUI()
 
     def initUI(self):
-        '''initiates ScoreBoard UI'''
+        '''Initializes ScoreBoard UI'''
         self.resize(200, 200)
         self.setWindowTitle('ScoreBoard')
 
-        # create a widget to hold other widgets
+        # Create a widget to hold other widgets
         self.mainWidget = QWidget()
         self.mainLayout = QVBoxLayout()
 
-        # create two labels which will be updated by signals
+        # Create labels for displaying game state
         self.label_clickLocation = QLabel("Click Location: ")
-        self.label_timeRemaining = QLabel("Time remaining: ")
+        self.label_timeRemaining = QLabel("Time Remaining: ")
 
-        self.mainWidget.setLayout(self.mainLayout)
+        # Determine the current player's turn
+        player_id = self.get_player_turn_id()
+        player_color = "Black" if player_id == 1 else "White"
+        self.label_turn = QLabel(f"Player {player_id}'s Turn: {player_color}")
+
+        # Add labels to layout
         self.mainLayout.addWidget(self.label_clickLocation)
         self.mainLayout.addWidget(self.label_timeRemaining)
+        self.mainLayout.addWidget(self.label_turn)
+
+        self.mainWidget.setLayout(self.mainLayout)
         self.setWidget(self.mainWidget)
 
+    def update_turn_label(self):
+        '''Updates the turn label based on the current player's turn'''
+        player_id = self.get_player_turn_id()
+        player_color = "Black" if player_id == 1 else "White"
+        self.label_turn.setText(f"Player {player_id}'s Turn: {player_color}")
+
     def make_connection(self, board):
-        '''this handles a signal sent from the board class'''
-        # when the clickLocationSignal is emitted in board the setClickLocation slot receives it
+        '''Handles signals sent from the board class'''
         board.clickLocationSignal.connect(self.setClickLocation)
-        # when the updateTimerSignal is emitted in the board the setTimeRemaining slot receives it
         board.updateTimerSignal.connect(self.setTimeRemaining)
 
-    @pyqtSlot(str)  # checks to make sure that the following slot is receiving an argument of the type 'int'
+    @pyqtSlot(str)
     def setClickLocation(self, clickLoc):
-        '''updates the label to show the click location'''
+        '''Updates the label to show the click location'''
         self.label_clickLocation.setText("Click Location: " + clickLoc)
-        #print('slot ' + clickLoc)
 
     @pyqtSlot(int)
     def setTimeRemaining(self, timeRemaining):
-        '''updates the time remaining label to show the time remaining'''
+        '''Updates the time remaining label'''
         update = "Time Remaining: " + str(timeRemaining)
         self.label_timeRemaining.setText(update)
-        #print('slot ' + str(timeRemaining))
-        # self.redraw()

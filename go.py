@@ -30,7 +30,7 @@ class Go(QMainWindow):
     def openGamePlay(self):
         self.board = Board(self, self.game_logic)
         self.setCentralWidget(self.board)
-        self.scoreBoard = ScoreBoard()
+        self.scoreBoard = ScoreBoard(self.game_logic.get_player_turn_id)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.scoreBoard)
         self.scoreBoard.make_connection(self.board)
         self.center()
