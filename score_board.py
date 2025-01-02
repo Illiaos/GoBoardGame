@@ -59,14 +59,11 @@ class ScoreBoard(QDockWidget):
         # Create labels for displaying game state
         self.label_timeRemaining = QLabel("Time Remaining: ")
 
-
-
         # Add labels to layout
         self.mainLayout.addWidget(self.label_turn)
         self.mainLayout.addWidget(self.label_black_score)
         self.mainLayout.addWidget(self.label_white_score)
         self.mainLayout.addWidget(self.label_timeRemaining)
-
 
         # Add pass button
         self.pass_button = QPushButton("Pass", self)

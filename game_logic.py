@@ -49,6 +49,10 @@ class GameLogic:
         self.captured_stones = {1: 0, 2: 0}
         self.pass_count = 0
 
+        if self.go.scoreBoard is not None:
+            self.go.scoreBoard.update_turn_label()
+            self.go.scoreBoard.update_score(0, 0)
+
     def check_game_over(self, board, restart_game_event, main_menu_event):
         #check if number of pass are >= 2 in a row
         if self.pass_count >= 2:
