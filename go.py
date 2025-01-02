@@ -32,13 +32,12 @@ class Go(QMainWindow):
     def openGamePlay(self):
         self.board = Board(self, self.game_logic)
         self.setCentralWidget(self.board)
-        self.scoreBoard = ScoreBoard(self.game_logic, self.game_logic.get_player_turn_id)
+        self.scoreBoard = ScoreBoard(self.game_logic, self.game_logic.get_player_turn_data)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.scoreBoard)
         self.scoreBoard.make_connection(self.board)
         self.center()
         self.setWindowTitle('Go')
         self.show()
-
 
     def center(self):
         '''Centers the window on the screen'''
@@ -55,4 +54,5 @@ class Go(QMainWindow):
     def update_scoreboard(self, black_score, white_score):
         self.scoreBoard.update_score(black_score, white_score)
 
-
+    def get_board(self):
+        return self.board

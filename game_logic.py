@@ -8,17 +8,17 @@ class GameLogic:
     def __init__(self):
         super().__init__()
         self.go = Go(self)
-        self.player_1 = Player_Info("", False)
-        self.player_2 = Player_Info("", False)
+        self.player_1 = Player_Info(1, "", False)
+        self.player_2 = Player_Info(2,"", False)
         self.captured_stones = {1: 0, 2: 0}
         self.pass_count = 0
         self.prev_board = None
+        self.komi_score_value = 6.5
         self.go.openMainMenu()
 
-        #self.go.openMainMenu()
     def start_new_game(self, player_name_1, player_name_2):
-        self.player_1 = Player_Info(player_name_1, True)
-        self.player_2 = Player_Info(player_name_2, False)
+        self.player_1 = Player_Info(1, player_name_1, True)
+        self.player_2 = Player_Info(2, player_name_2, False)
         self.go.openGamePlay()
 
     def get_player_turn_id(self):
@@ -26,6 +26,12 @@ class GameLogic:
             return 1
         elif self.player_2.player_turn:
             return  2
+
+    def get_player_turn_data(self):
+        if self.player_1.player_turn:
+            return  self.player_1
+        else:
+            return self.player_2
 
     def change_turn(self):
         if self.player_1.player_turn:
@@ -46,6 +52,10 @@ class GameLogic:
     def check_game_over(self, board, restart_game_event, main_menu_event):
         #check if number of pass are >= 2 in a row
         if self.pass_count >= 2:
+            black_score, white_score = self.calculate_nuber_of_stones(board)
+            white_score += self.komi_score_value
+            self.go.get_board().timer.stop()
+            self.go.open_win_screen(self.player_1.getPlayerName(), self.player_2.getPlayerName(), black_score, white_score, restart_game_event, main_menu_event)
             return True
 
         for x in range(len(board)):
@@ -55,6 +65,7 @@ class GameLogic:
                         return  False #can make move
 
         black_score, white_score = self.calculate_nuber_of_stones(board)
+        white_score += self.komi_score_value
         self.go.open_win_screen(self.player_1.getPlayerName(), self.player_2.getPlayerName(), black_score, white_score, restart_game_event, main_menu_event)
         return True #end of game
 
@@ -172,5 +183,4 @@ class GameLogic:
     def player_pass(self):
         self.pass_count += 1
         self.change_turn()
-        print(self.pass_count)
-
+        self.check_game_over(self.go.get_board().boardArray, self.go.get_board().resetGame, self.go.get_board().pausePanelMainMenuEvent)

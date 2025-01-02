@@ -8,7 +8,7 @@ class WinPanel(QDialog):
         self.setModal(True)
         self.setParent(parent)
         self.setWindowTitle("")  # No title
-        self.centerDialog()
+        #self.centerDialog()
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)  # Remove the title bar and close button
         self.setFixedSize(300, 200)  # Set a fixed size for the alert dialog
         self.restart_callback = restart_callback

@@ -1,17 +1,18 @@
 from PyQt6.QtWidgets import QDockWidget, QVBoxLayout, QWidget, QLabel, QPushButton
-from PyQt6.QtCore import pyqtSlot
+from PyQt6.QtCore import pyqtSlot, Qt
 
 
 class ScoreBoard(QDockWidget):
     '''Base the score_board on a QDockWidget'''
 
-    def __init__(self, game_logic, get_player_turn_id):
+    def __init__(self, game_logic, get_player_turn_data):
         """
-        :param get_player_turn_id: A function to get the current player's ID
+        :param get_player_turn_data: A function to get the current player's Name
         """
         super().__init__()
         self.game_logic = game_logic
-        self.get_player_turn_id = get_player_turn_id
+        self.get_player_turn_data = get_player_turn_data
+        self.label_turn = QLabel()
         self.label_black_score = QLabel("Black Score: 0")
         self.label_white_score = QLabel("White Score: 0")
         self.initUI()
@@ -53,9 +54,8 @@ class ScoreBoard(QDockWidget):
         self.mainLayout = QVBoxLayout()
 
         # Determine the current player's turn
-        player_id = self.get_player_turn_id()
-        player_color = "Black" if player_id == 1 else "White"
-        self.label_turn = QLabel(f"Player {player_id}'s Turn: {player_color}")
+        self.label_turn.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.update_turn_label()
         # Create labels for displaying game state
         self.label_timeRemaining = QLabel("Time Remaining: ")
 
@@ -79,9 +79,10 @@ class ScoreBoard(QDockWidget):
 
     def update_turn_label(self):
         '''Updates the turn label based on the current player's turn'''
-        player_id = self.get_player_turn_id()
+        player_id = self.get_player_turn_data().getPlayerId()
+        player_name = self.get_player_turn_data().getPlayerName()
         player_color = "Black" if player_id == 1 else "White"
-        self.label_turn.setText(f"Player {player_id}'s Turn: {player_color}")
+        self.label_turn.setText(f"{player_name}'s \nTurn: {player_color}")
 
     def make_connection(self, board):
         '''Handles signals sent from the board class'''

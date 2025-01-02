@@ -1,15 +1,15 @@
 class Player_Info:
 
-    def __init__(self, player_name, turn_state):
+    def __init__(self, id, player_name, turn_state):
+        self.player_id = id
         self.player_name = player_name
-        self.player_score = 0
         self.player_turn = turn_state
+
+    def getPlayerId(self):
+        return self.player_id
 
     def getPlayerName(self):
         return self.player_name
-
-    def getPlayerScore(self):
-        return self.player_score
 
     def getPlayerTurn(self):
         return self.player_turn
