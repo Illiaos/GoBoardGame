@@ -30,6 +30,7 @@ class GameLogic:
         else:
             self.player_1.player_turn = True
             self.player_2.player_turn = False
+        self.go.scoreBoard.update_turn_label()
 
     def set_default_player_turn(self):
         self.player_1.player_turn = True
