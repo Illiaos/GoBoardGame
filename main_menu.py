@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QLineEdit, QPushButton, QLabel, QHBoxLayout, QSpacerItem,
     QSizePolicy, QFrame, QApplication
 )
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QPainter, QPixmap
 from PyQt6.QtCore import Qt
 
 from alert_panel import AlertPanel
@@ -18,12 +18,18 @@ class MainMenuPanel(QFrame):
         self.rulesWindow = RulesPanel(parent)
         parent.setWindowTitle("Main Menu")
 
+        # Create a QLabel for the background
+        self.background_label = QLabel(self)
+        background_image = QPixmap("GoBoardGame/main.png")  # Replace with your image path
+        self.background_label.setPixmap(background_image)
+        self.background_label.setScaledContents(True)
+
+
+
 
         # Set the style of the frame
         self.setStyleSheet("""
-            QFrame {
-                background-color: #deb887; /* Light wood color */
-            }
+        
             QLabel, QLineEdit, QPushButton {
                 font-family: 'Verdana';
                 font-size: 16px;
@@ -53,11 +59,14 @@ class MainMenuPanel(QFrame):
 
         self.layout.addSpacerItem(QSpacerItem(20, 60, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
 
+
+
         # Game Title
         self.game_title = QLabel("Go Game")
         self.game_title.setFont(QFont("Verdana", 48, QFont.Weight.Bold))
         self.game_title.setStyleSheet("""
             QLabel {
+            color: #8b4513;
                 font-family: 'Verdana';
                 font-size: 36px;
             }
@@ -95,7 +104,8 @@ class MainMenuPanel(QFrame):
             QLabel {
                 font family: 'Verdana';
                 font-style: italic;
-                color: black;
+                text-size: 24px;
+                color: white;
                 padding: 10px;
                 border: 1px solid #8b4513;
                 border-radius: 5px;
@@ -148,7 +158,7 @@ class MainMenuPanel(QFrame):
                 font-family: 'Verdana';
                 font-size: 14px;
                 font-style: italic;
-                color: black;
+                color: white;
             }
         """)
         self.dev_info.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -180,3 +190,7 @@ class MainMenuPanel(QFrame):
             self.alertWindow.showPanel("Enter player 2 name or Select randomly")
         else:
             self.game_logic.start_new_game(self.player1_input.text(), self.player2_input.text())
+
+    def resizeEvent(self, event):
+        """Ensure the background image covers the entire widget on resize."""
+        self.background_label.setGeometry(self.rect())
