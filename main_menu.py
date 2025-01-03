@@ -66,7 +66,7 @@ class MainMenuPanel(QFrame):
         self.game_title.setFont(QFont("Verdana", 48, QFont.Weight.Bold))
         self.game_title.setStyleSheet("""
             QLabel {
-            color: #8b4513;
+                color: #8b4513;
                 font-family: 'Verdana';
                 font-size: 36px;
             }
@@ -107,19 +107,14 @@ class MainMenuPanel(QFrame):
                 text-size: 24px;
                 color: white;
                 padding: 10px;
-                border: 1px solid #8b4513;
+                background-color: #8b4513;
+                border: 2px solid black;
                 border-radius: 5px;
             }
         """)
         self.rules_label.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.rules_label.hide()  # Initially hidden
         self.layout.addWidget(self.rules_label)
-
-        # Set the layout for this frame
-        self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setLayout(self.layout)
-
-
 
         # Player 1 Input with Label (centered under Play button)
         self.player1_layout = QHBoxLayout()
@@ -151,18 +146,40 @@ class MainMenuPanel(QFrame):
         self.layout.addSpacerItem(QSpacerItem(20, 60, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
 
         # Dev info
-        self.dev_info = QLabel("Developed by \n Illia Movchan 3098121 \n Olzhas Samat 3095916")
-        self.dev_info.setFont(QFont("Verdana", 14, QFont.Weight.Bold))
-        self.dev_info.setStyleSheet("""
+        # Create a container for the background
+        self.dev_info_container = QWidget()
+        self.dev_info_container.setStyleSheet("""
+            QWidget {
+                background-color: #8b4513;
+                border: 2px solid black;
+                border-radius: 10px;
+            }
+        """)
+
+        # Create the text label
+        self.dev_info_text = QLabel("Developed by \n Illia Movchan 3098121 \n Olzhas Samat 3095916")
+        self.dev_info_text.setFont(QFont("Verdana", 14, QFont.Weight.Bold))
+        self.dev_info_text.setStyleSheet("""
             QLabel {
                 font-family: 'Verdana';
                 font-size: 14px;
                 font-style: italic;
                 color: white;
+                border: none;
             }
         """)
-        self.dev_info.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout.addWidget(self.dev_info)
+        self.dev_info_text.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Add the text label to the container using a layout
+        container_layout = QVBoxLayout(self.dev_info_container)
+        container_layout.setContentsMargins(10, 10, 10, 10)  # Padding inside the container
+        container_layout.addWidget(self.dev_info_text)
+
+        # Set the container to have a fixed width
+        self.dev_info_container.setFixedWidth(300)
+
+        # Create spacers for vertical centering
+        self.layout.addWidget(self.dev_info_container,  alignment=Qt.AlignmentFlag.AlignHCenter)  # Center container horizontally
 
         # Set the layout for this frame
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
