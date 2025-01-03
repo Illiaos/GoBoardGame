@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
 from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt
 
+#Panel to illustrate an alert made by user, with close option, to quickly recover
 class AlertPanel(QDialog):
     def __init__(self, parent, message, title="Alert"):
         super().__init__(parent)
@@ -11,11 +12,12 @@ class AlertPanel(QDialog):
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)  # Remove the title bar and close button
         self.setFixedSize(300, 200)  # Set a fixed size for the alert dialog
 
+        #set style for a panel
         self.setStyleSheet("""
             QDialog {
-                background-color: #deb887; /* Light wood color */
-                border: 5px solid black;  /* Black border around the window */
-                border-radius: 10px;  /* Rounded corners */
+                background-color: #deb887;
+                border: 5px solid black;
+                border-radius: 10px;
             }
             QLabel {
                 font-family: 'Verdana';
@@ -23,7 +25,7 @@ class AlertPanel(QDialog):
                 color: black;
             }
             QPushButton {
-                background-color: #8b4513; /* Dark wood color */
+                background-color: #8b4513;
                 color: white;
                 border: 2px solid #5a3311;
                 border-radius: 5px;
@@ -32,7 +34,7 @@ class AlertPanel(QDialog):
                 font-size: 12px;
             }
             QPushButton:hover {
-                background-color: #a0522d;  /* Lighter wood color on hover */
+                background-color: #a0522d;
             }
         """)
 
@@ -63,7 +65,7 @@ class AlertPanel(QDialog):
         # Create OK button
         self.ok_button = QPushButton("OK")
         self.ok_button.setFont(QFont("Verdana", 12))
-        self.ok_button.clicked.connect(self.hide)  # Hide the dialog when clicked
+        self.ok_button.clicked.connect(self.hide)  #Connecte a method to close the panel
 
         layout.addWidget(self.title_label)  # Add title
         layout.addWidget(self.message_label)  # Add message
@@ -72,12 +74,11 @@ class AlertPanel(QDialog):
         self.setLayout(layout)
 
     def showPanel(self, message):
-        self.message_label.setText(message)
-        self.centerDialog()
+        self.message_label.setText(message) #Set message text, when window is opened
+        self.centerDialog() #Center dialog panel
         super().show()
 
     def hide(self):
-        """Override the hide method to close the dialog."""
         super().hide()
 
     def centerDialog(self):

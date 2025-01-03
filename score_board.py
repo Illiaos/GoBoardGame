@@ -1,14 +1,8 @@
 from PyQt6.QtWidgets import QDockWidget, QVBoxLayout, QWidget, QLabel, QPushButton
 from PyQt6.QtCore import pyqtSlot, Qt
 
-
 class ScoreBoard(QDockWidget):
-    '''Base the score_board on a QDockWidget'''
-
     def __init__(self, game_logic, get_player_turn_data):
-        """
-        :param get_player_turn_data: A function to get the current player's Name
-        """
         super().__init__()
         self.game_logic = game_logic
         self.get_player_turn_data = get_player_turn_data
@@ -17,8 +11,8 @@ class ScoreBoard(QDockWidget):
         self.label_white_score = QLabel("White Score: 0")
         self.initUI()
 
+    #Initializes ScoreBoard UI
     def initUI(self):
-        '''Initializes ScoreBoard UI'''
         self.resize(200, 200)
 
         self.setStyleSheet("""
@@ -75,26 +69,26 @@ class ScoreBoard(QDockWidget):
         self.mainWidget.setLayout(self.mainLayout)
         self.setWidget(self.mainWidget)
 
+    #Updates the turn label based on the current player's turn
     def update_turn_label(self):
-        '''Updates the turn label based on the current player's turn'''
         player_id = self.get_player_turn_data().getPlayerId()
         player_name = self.get_player_turn_data().getPlayerName()
         player_color = "Black" if player_id == 1 else "White"
         self.label_turn.setText(f"{player_name}'s \nTurn: {player_color}")
 
+    #Handles signals sent from the board class
     def make_connection(self, board):
-        '''Handles signals sent from the board class'''
         board.clickLocationSignal.connect(self.setClickLocation)
         board.updateTimerSignal.connect(self.setTimeRemaining)
 
+    #Updates the label to show the click location
     @pyqtSlot(str)
     def setClickLocation(self, clickLoc):
-        '''Updates the label to show the click location'''
         self.label_clickLocation.setText("Click Location: " + clickLoc)
 
+    #Updates the time remaining label
     @pyqtSlot(int)
     def setTimeRemaining(self, timeRemaining):
-        '''Updates the time remaining label'''
         update = "Time Remaining \n" + str(timeRemaining)
         self.label_timeRemaining.setText(update)
         self.label_timeRemaining.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -102,6 +96,7 @@ class ScoreBoard(QDockWidget):
     def pass_call(self):
         self.game_logic.player_pass()
 
+    #method to update score
     def update_score(self, black_score, white_score):
         self.label_black_score.setText(f"Black Score: {black_score}")
         self.label_white_score.setText(f"White Score: {white_score}")

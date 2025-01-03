@@ -7,7 +7,6 @@ from PyQt6.QtGui import QFont, QPainter, QPixmap
 from PyQt6.QtCore import Qt
 
 from alert_panel import AlertPanel
-from rules_panel import RulesPanel
 
 class MainMenuPanel(QFrame):
     def __init__(self, parent: QMainWindow, game_logic):
@@ -15,7 +14,6 @@ class MainMenuPanel(QFrame):
         self.setParent(parent)
         self.game_logic = game_logic
         self.alertWindow = AlertPanel(parent,"")
-        self.rulesWindow = RulesPanel(parent)
         parent.setWindowTitle("Main Menu")
 
         # Create a QLabel for the background
@@ -23,9 +21,6 @@ class MainMenuPanel(QFrame):
         background_image = QPixmap("./assets/textures/main.png")  # Replace with your image path
         self.background_label.setPixmap(background_image)
         self.background_label.setScaledContents(True)
-
-
-
 
         # Set the style of the frame
         self.setStyleSheet("""
@@ -58,8 +53,6 @@ class MainMenuPanel(QFrame):
         self.layout.setSpacing(20)
 
         self.layout.addSpacerItem(QSpacerItem(20, 60, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding))
-
-
 
         # Game Title
         self.game_title = QLabel("Go Game")
@@ -185,19 +178,20 @@ class MainMenuPanel(QFrame):
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(self.layout)
 
+    #Toggle visibility of the rules label
     def show_rules_panel(self):
-        """Toggle visibility of the rules label."""
         if self.rules_label.isVisible():
             self.rules_label.hide()
         else:
             self.rules_label.show()
 
+    #Generate random names for Player 1 and Player 2.
     def generate_random_names(self):
-        """Generate random names for Player 1 and Player 2."""
         random_names = ["Alex", "Jordan", "Taylor", "Morgan", "Casey", "Jamie", "Riley", "Drew"]
         self.player1_input.setText(random.choice(random_names))
         self.player2_input.setText(random.choice(random_names))
 
+    #Method to start game and check if player names are entered
     def start_game(self):
         if (self.player1_input.text() == "" or len(self.player1_input.text()) == 0) and (self.player2_input.text() == "" or len(self.player2_input.text()) == 0):
             self.alertWindow.showPanel("Enter player names or Select randomly")
@@ -208,6 +202,6 @@ class MainMenuPanel(QFrame):
         else:
             self.game_logic.start_new_game(self.player1_input.text(), self.player2_input.text())
 
+    #Ensure the background image covers the entire widget on resize.
     def resizeEvent(self, event):
-        """Ensure the background image covers the entire widget on resize."""
         self.background_label.setGeometry(self.rect())

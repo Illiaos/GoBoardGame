@@ -1,5 +1,5 @@
 class Player_Info:
-
+    #Class to represent player data
     def __init__(self, id, player_name, turn_state):
         self.player_id = id
         self.player_name = player_name
