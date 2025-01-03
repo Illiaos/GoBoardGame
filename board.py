@@ -133,14 +133,14 @@ class Board(QFrame):  # base the board on a QFrame widget
         # Draw column labels (letters)
         letters = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'[:self.boardWidth]  # Adjust for board size
         for col in range(self.boardWidth):
-            x = col * self.squareWidthSize + self.squareWidthSize // 2
-            y = -5  # Padding from the top
+            x = col * self.squareWidthSize + 80
+            y = 50  # Padding from the top
             painter.drawText(x, y, self.squareWidthSize, 20, Qt.AlignmentFlag.AlignCenter, letters[col])
 
         # Draw row labels (numbers)
         for row in range(self.boardHeight):
-            x = -3  # Padding from the left
-            y = row * self.squareHeightSize + self.squareHeightSize // 2
+            x = 50  # Padding from the left
+            y = row * self.squareHeightSize + 80
             painter.drawText(x, y, 20, self.squareHeightSize, Qt.AlignmentFlag.AlignCenter, str(row + 1))
 
     def mousePressEvent(self, event):
@@ -156,19 +156,13 @@ class Board(QFrame):  # base the board on a QFrame widget
         self.timer.start(self.timerSpeed)
         self.update()
 
-    def tryMove(self, newX, newY):
-        '''tries to move a piece'''
-        pass  # Implement this method according to your logic
-
     def drawBoardSquares(self, painter):
         background_image = QPixmap("./assets/textures/dsa.png")  # Replace with the actual image path
-
-
         for row in range(0, int(self.boardHeight)):
             for col in range(0, int(self.boardWidth)):
                 painter.save()
-                x = col * self.squareWidthSize + 10
-                y = row * self.squareHeightSize + 10
+                x = col * self.squareWidthSize + 80
+                y = row * self.squareHeightSize + 80
                 self.squareEdges[row][col] = (x, y)
                 if col == self.boardWidth - 1:
                     self.squareEdges[row][col + 1] = (x + self.squareWidthSize, y)

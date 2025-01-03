@@ -57,7 +57,8 @@ class ScoreBoard(QDockWidget):
         self.label_turn.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.update_turn_label()
         # Create labels for displaying game state
-        self.label_timeRemaining = QLabel("Time Remaining: ")
+        self.label_timeRemaining = QLabel("Time Remaining")
+        self.label_timeRemaining.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Add labels to layout
         self.mainLayout.addWidget(self.label_turn)
@@ -94,8 +95,9 @@ class ScoreBoard(QDockWidget):
     @pyqtSlot(int)
     def setTimeRemaining(self, timeRemaining):
         '''Updates the time remaining label'''
-        update = "Time Remaining: " + str(timeRemaining)
+        update = "Time Remaining \n" + str(timeRemaining)
         self.label_timeRemaining.setText(update)
+        self.label_timeRemaining.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
     def pass_call(self):
         self.game_logic.player_pass()
