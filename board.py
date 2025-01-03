@@ -2,7 +2,7 @@ import math
 
 from PyQt6.QtWidgets import QFrame
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPoint
-from PyQt6.QtGui import QPainter, QColor, QBrush, QRadialGradient
+from PyQt6.QtGui import QPainter, QColor, QBrush, QRadialGradient, QPixmap, QFont
 from PyQt6.uic.Compiler.qtproxies import QtCore
 from exceptiongroup import catch
 
@@ -15,8 +15,8 @@ class Board(QFrame):  # base the board on a QFrame widget
     clickLocationSignal = pyqtSignal(str)  # signal sent when there is a new click location
 
     # TODO set the board width and height to be square
-    boardWidth = 7  # board is 0 squares wide # TODO this needs updating
-    boardHeight = 7 #
+    boardWidth = 9  # board is 0 squares wide # TODO this needs updating
+    boardHeight = 9 #
     squareWidthSize = 90
     squareHeightSize = 90
     timerSpeed = 1000  # the timer updates every 1 second
@@ -108,11 +108,40 @@ class Board(QFrame):  # base the board on a QFrame widget
 
     def paintEvent(self, event):
         painter = QPainter(self)
+
+        # Draw the background image
+        background_image = QPixmap("/Users/olzhassamat/Desktop/yy/GoBoardGame/qwe.png")  # Replace with the actual image path
+        painter.drawPixmap(self.rect(), background_image)
         self.squareEdges = [[0.0 for _ in range(self.boardWidth + 1)] for _ in range(self.boardHeight + 1)]
-        self.squareWidthSize = int(self.squareWidth()) #update width according to size of screen
-        self.squareHeightSize = int(self.squareHeight()) #update height according to size of screen
-        self.drawBoardSquares(painter) #draw game board
-        self.drawPieces(painter) #draw game parts
+        self.squareWidthSize = int(self.squareWidth())  # Update width according to size of screen
+        self.squareHeightSize = int(self.squareHeight())  # Update height according to size of screen
+
+        self.drawBoardSquares(painter)  # Draw game board
+        self.drawPieces(painter)  # Draw game pieces
+        self.drawLabels(painter)  # Draw labels for rows and columns
+
+    def drawLabels(self, painter):
+        """
+        Draws letters for vertical rows and numbers for horizontal columns.
+        """
+        painter.setPen(QColor(200, 200, 200))
+
+        # Set a custom font for the labels
+        font = QFont("Verdana", 18, QFont.Weight.Bold)  # Font family, size, weight
+        painter.setFont(font)
+
+        # Draw column labels (letters)
+        letters = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'[:self.boardWidth]  # Adjust for board size
+        for col in range(self.boardWidth):
+            x = col * self.squareWidthSize + self.squareWidthSize // 2
+            y = -5  # Padding from the top
+            painter.drawText(x, y, self.squareWidthSize, 20, Qt.AlignmentFlag.AlignCenter, letters[col])
+
+        # Draw row labels (numbers)
+        for row in range(self.boardHeight):
+            x = -3  # Padding from the left
+            y = row * self.squareHeightSize + self.squareHeightSize // 2
+            painter.drawText(x, y, 20, self.squareHeightSize, Qt.AlignmentFlag.AlignCenter, str(row + 1))
 
     def mousePressEvent(self, event):
         try:
@@ -132,6 +161,10 @@ class Board(QFrame):  # base the board on a QFrame widget
         pass  # Implement this method according to your logic
 
     def drawBoardSquares(self, painter):
+        background_image = QPixmap(
+            "/Users/olzhassamat/Desktop/yy/GoBoardGame/dsa.png")  # Replace with the actual image path
+
+
         for row in range(0, int(self.boardHeight)):
             for col in range(0, int(self.boardWidth)):
                 painter.save()
@@ -141,8 +174,8 @@ class Board(QFrame):  # base the board on a QFrame widget
                 if col == self.boardWidth - 1:
                     self.squareEdges[row][col + 1] = (x + self.squareWidthSize, y)
                 painter.translate(x, y)
-                painter.setBrush(QBrush(QColor(160, 82, 45)))  # Set brush color
-                painter.drawRect(0, 0, self.squareWidthSize, self.squareHeightSize)  # Draw rectangles
+
+                painter.drawPixmap(0, 0, self.squareWidthSize, self.squareHeightSize, background_image)  # Draw rectangles
                 painter.restore()
         last_row = self.squareEdges[-2]
         modified_row = [(x, y + self.squareHeightSize) for x, y in last_row]
