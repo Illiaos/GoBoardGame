@@ -110,7 +110,7 @@ class Board(QFrame):  # base the board on a QFrame widget
         painter = QPainter(self)
 
         # Draw the background image
-        background_image = QPixmap("GoBoardGame/qwe.png")  # Replace with the actual image path
+        background_image = QPixmap("./assets/textures/qwe.png")  # Replace with the actual image path
         painter.drawPixmap(self.rect(), background_image)
         self.squareEdges = [[0.0 for _ in range(self.boardWidth + 1)] for _ in range(self.boardHeight + 1)]
         self.squareWidthSize = int(self.squareWidth())  # Update width according to size of screen
@@ -161,8 +161,7 @@ class Board(QFrame):  # base the board on a QFrame widget
         pass  # Implement this method according to your logic
 
     def drawBoardSquares(self, painter):
-        background_image = QPixmap(
-            "GoBoardGame/dsa.png")  # Replace with the actual image path
+        background_image = QPixmap("./assets/textures/dsa.png")  # Replace with the actual image path
 
 
         for row in range(0, int(self.boardHeight)):

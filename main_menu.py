@@ -20,7 +20,7 @@ class MainMenuPanel(QFrame):
 
         # Create a QLabel for the background
         self.background_label = QLabel(self)
-        background_image = QPixmap("GoBoardGame/main.png")  # Replace with your image path
+        background_image = QPixmap("./assets/textures/main.png")  # Replace with your image path
         self.background_label.setPixmap(background_image)
         self.background_label.setScaledContents(True)
 

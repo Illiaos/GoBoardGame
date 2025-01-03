@@ -15,7 +15,7 @@ class Go(QMainWindow):
         self.board = None
         self.scoreBoard = None
         self.setWindowTitle("Go Game")
-        self.setWindowIcon(QIcon("icons/game_icon.png"))
+        self.setWindowIcon(QIcon("assets/icons/game_icon.png"))
         self.setFixedSize(800, 800)
 
     def openMainMenu(self):
